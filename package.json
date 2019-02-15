@@ -1,0 +1,22 @@
+{
+  "name": "batalha-naval",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://descoplay:r1478953DGH@github.com/descoplay/batalha-naval-nodejs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/descoplay/batalha-naval-nodejs/issues"
+  },
+  "homepage": "https://github.com/descoplay/batalha-naval-nodejs#readme",
+  "dependencies": {
+    "readline": "^1.3.0"
+  }
+}

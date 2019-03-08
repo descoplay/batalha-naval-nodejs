@@ -19,32 +19,29 @@ function gerarLinha (exibirNumeros = false) {
     console.log(linhaRenderizada)
 }
 
-function gerarLinhaAlfa(letra) {
+function gerarLinhaAlfa (letra) {
     let linha = ''
 
     linha = `${letra} |`
 
-    letras.map((letra, pos) => {
-        pos = pos + 1
-
+    letras.map(() => {
         linha += '      |'
     })
 
     console.log(linha)
 }
 
-
 class Tabuleiro {
-  gerar () {
-      gerarLinha(true)
+    gerar () {
+        gerarLinha(true)
 
-      letras.map(letra => {
-          gerarLinha()
-          gerarLinhaAlfa(letra)
-      })
+        letras.map(letra => {
+            gerarLinha()
+            gerarLinhaAlfa(letra)
+        })
 
-      gerarLinha()
-  }
+        gerarLinha()
+    }
 }
 
 module.exports = new Tabuleiro()

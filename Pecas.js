@@ -2,6 +2,7 @@ const objectMap = require('object-map')
 
 const userInput = require('@desco/node-user-input')
 
+const clear = require('./clear')
 const Tabuleiro = require('./Tabuleiro')
 
 const criarPecas = tiposPeca => {
@@ -40,9 +41,14 @@ class Pecas {
             perguntas[chave] = `Qual a posição da peça "${peca.nome}" de número ${peca.num}?`
         })
 
+        Tabuleiro.gerar()
+
         return userInput(perguntas, (idPeca, posicao) => {
             return Tabuleiro.validarPosicaoPeca(idPeca, posicao).then(() => {
                 this.pecas[idPeca].pos = posicao.toUpperCase()
+
+                clear()
+                Tabuleiro.gerar()
             })
         })
     }

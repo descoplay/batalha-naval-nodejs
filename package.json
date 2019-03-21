@@ -18,6 +18,7 @@
   "homepage": "https://github.com/descoplay/batalha-naval-nodejs#readme",
   "dependencies": {
     "@desco/node-user-input": "^1.2.0",
+    "clear": "^0.1.0",
     "intersect": "^1.0.1",
     "object-map": "^1.0.2"
   }

@@ -1,10 +1,8 @@
-// const Tabuleiro = require('./Tabuleiro')
+const clear = require('./clear')
+
 const Pecas = require('./Pecas')
 
-console.log('BATALHA NAVAL')
-console.log()
-
-// Tabuleiro.gerar()
+clear()
 
 Promise.resolve()
     .then(() => {

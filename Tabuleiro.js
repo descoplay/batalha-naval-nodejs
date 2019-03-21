@@ -10,12 +10,12 @@ function gerarLinha (exibirNumeros = false) {
         pos++
 
         if (exibirNumeros) {
-            const posStr = `${pos}`.padStart(2, ' ')
+            const posStr = `${pos}`.padStart(3, ' ')
 
             linhaRenderizada += `  ${posStr}  |`
         }
         else {
-            linhaRenderizada += '-------'
+            linhaRenderizada += '--------'
         }
     })
 
@@ -24,17 +24,25 @@ function gerarLinha (exibirNumeros = false) {
 
 function gerarLinhaAlfa (letra) {
     let linha = ''
+    const areasOcupadas = Tabuleiro.getAreasOcupadas()
 
     linha = `${letra} |`
 
-    letras.map(() => {
-        linha += '      |'
-    })
+    for (let numero = 1, max = letras.length; numero <= max; numero++) {
+        const pos = `${letra}${numero}`
+
+        if (areasOcupadas.indexOf(pos) === -1) {
+            linha += '       |'
+        }
+        else {
+            linha += '   X   |'
+        }
+    }
 
     console.log(linha)
 }
 
-class Tabuleiro {
+class TabuleiroClass {
     gerar () {
         gerarLinha(true)
 
@@ -44,6 +52,8 @@ class Tabuleiro {
         })
 
         gerarLinha()
+
+        console.log()
     }
 
     validarPosicaoPeca (idPeca, posicao) {
@@ -153,4 +163,6 @@ class Tabuleiro {
     }
 }
 
-module.exports = new Tabuleiro()
+const Tabuleiro = new TabuleiroClass()
+
+module.exports = Tabuleiro

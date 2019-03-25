@@ -10,12 +10,12 @@ function gerarLinha (exibirNumeros = false) {
         pos++
 
         if (exibirNumeros) {
-            const posStr = `${pos}`.padStart(3, ' ')
+            pos = `${pos}`.padStart(2, '0')
 
-            linhaRenderizada += `  ${posStr}  |`
+            linhaRenderizada += gerarColuna(pos)
         }
         else {
-            linhaRenderizada += '--------'
+            linhaRenderizada += '-------'
         }
     })
 
@@ -32,14 +32,20 @@ function gerarLinhaAlfa (letra) {
         const pos = `${letra}${numero}`
 
         if (areasOcupadas.indexOf(pos) === -1) {
-            linha += '       |'
+            linha += gerarColuna()
         }
         else {
-            linha += '   X   |'
+            const Peca = Tabuleiro.getPecaPorPosicao(pos)
+
+            linha += gerarColuna(Peca.id)
         }
     }
 
     console.log(linha)
+}
+
+function gerarColuna (conteudo = '  ') {
+    return `  ${conteudo}  |`
 }
 
 class TabuleiroClass {
@@ -160,6 +166,25 @@ class TabuleiroClass {
         }
 
         return Promise.resolve()
+    }
+
+    getPecaPorPosicao (pos) {
+        const Pecas = require('./Pecas').pecas
+        let aRetornar
+
+        objectMap(Pecas, (Peca, idPeca) => {
+            if (!Peca.pos) {
+                return
+            }
+
+            const pecaAreas = this.getAreasOcupadasPeca(idPeca, Peca.pos)
+
+            if (pecaAreas.indexOf(pos) !== -1) {
+                aRetornar = Peca
+            }
+        })
+
+        return aRetornar
     }
 }
 

@@ -16,7 +16,7 @@ const criarPecas = tiposPeca => {
 
             delete peca.qtd
 
-            pecas[`${peca.nome}-${peca.num}`] = peca
+            pecas[peca.id] = peca
         }
     })
 
@@ -32,27 +32,122 @@ class Pecas {
             { nome: 'Submarino', qtd: 4, tam: 1, desvio: false, },
             { nome: 'Cruzador', qtd: 3, tam: 2, desvio: false, },
         ]
+
+        this.pecas = criarPecas(this.tiposPeca)
     }
 
-    setPos () {
-        this.pecas = criarPecas(this.tiposPeca)
-
-        const perguntas = {}
-
-        objectMap(this.pecas, (peca, chave) => {
-            perguntas[chave] = `Qual a posição da peça "${peca.nome}" de número ${peca.num}?`
-        })
+    selecionarPeca (_pergunta) {
+        clear()
 
         Tabuleiro.gerar()
 
-        return userInput(perguntas, (idPeca, posicao) => {
-            return Tabuleiro.validarPosicaoPeca(idPeca, posicao).then(() => {
-                this.pecas[idPeca].pos = posicao.toUpperCase()
+        let pergunta = _pergunta + '\n\n'
 
+        objectMap(this.pecas, peca => {
+            pergunta += `${peca.id} | ${peca.nome} ${peca.num}`
+
+            if (peca.pos) {
+                pergunta += ' [Já posicionada]'
+            }
+
+            pergunta += '\n'
+        })
+
+        pergunta += '\nCódigo:'
+
+        return userInput([ pergunta, ], (chave, resposta) => {
+            const codigos = Object.keys(this.pecas)
+
+            resposta = resposta.toUpperCase()
+
+            if (codigos.indexOf(resposta) === -1) {
                 clear()
                 Tabuleiro.gerar()
-            })
+
+                return Promise.reject({ type: 'repeat', message: 'Código inválido', })
+            }
+
+            return Promise.resolve()
+        }).then(resposta => {
+            resposta = resposta[0].toUpperCase()
+
+            return Promise.resolve(this.pecas[resposta])
         })
+    }
+
+    posicionarPeca (_peca) {
+        clear()
+        Tabuleiro.gerar()
+
+        const peca = { ..._peca, }
+        const pergunta = `Onde deseja posicionar a peça ${peca.nome} ${peca.num}?`
+
+        return userInput([ pergunta, ], (chave, resposta) => {
+            return Tabuleiro.validarPosicaoPeca(peca.id, resposta)
+                .then(() => {
+                    resposta = resposta.toUpperCase()
+
+                    this.pecas[peca.id].pos = resposta
+
+                    clear()
+                    Tabuleiro.gerar()
+                })
+                .catch(erro => {
+                    clear()
+
+                    Tabuleiro.gerar()
+
+                    return Promise.reject(erro)
+                })
+        })
+    }
+
+    tudoPosicionado () {
+        let tudoPosicionado = true
+
+        objectMap(this.pecas, peca => {
+            if (!peca.pos) {
+                tudoPosicionado = false
+            }
+        })
+
+        return tudoPosicionado
+    }
+
+    setPos () {
+        return this.selecionarPeca('Qual a peça a ser posicionada?')
+            .then(peca => {
+                return this.posicionarPeca(peca)
+            })
+            .then(() => {
+                if (this.tudoPosicionado()) {
+                    const pergunta = 'Todas as peças foram posicionadas. Seguir para a próxima '
+                        + 'etapa? (S/N)'
+
+                    return userInput([ pergunta, ], (chave, resposta) => {
+                        if ([ 'S', 'N', ].indexOf(resposta.toUpperCase()) === -1) {
+                            clear()
+                            Tabuleiro.gerar()
+
+                            return Promise.reject({ type: 'repeat', message: 'Resposta inválida', })
+                        }
+
+                        return Promise.resolve()
+                    }).then(resposta => {
+                        resposta = resposta[0].toUpperCase()
+
+                        if (resposta === 'S') {
+                            return Promise.resolve()
+                        }
+                        else {
+                            return this.setPos()
+                        }
+                    })
+                }
+                else {
+                    return this.setPos()
+                }
+            })
     }
 }
 

@@ -23,7 +23,7 @@ const girar = _peca => {
     }
 
     return userInput(pergunta, validacao).then(resposta => {
-        return { ..._peca, angulo: parseInt(resposta), }
+        return Promise.resolve({ ..._peca, angulo: parseInt(resposta), })
     })
 }
 
@@ -32,17 +32,7 @@ const posicionar = _peca => {
     const pergunta = `Onde deseja posicionar a peça ${peca.nome} ${peca.num}?`
 
     const validacao = resposta => {
-        return Tabuleiro.validarPosicaoPeca(peca.id, resposta)
-            .then(() => {
-                const Pecas = require('../Pecas')
-
-                resposta = resposta.toUpperCase()
-
-                Pecas.pecas[peca.id].pos = resposta
-
-                clear()
-                Tabuleiro.gerar()
-            })
+        return Tabuleiro.validarPosicaoPeca(peca.id, resposta, peca.angulo)
             .catch(erro => {
                 clear()
                 Tabuleiro.gerar()
@@ -53,19 +43,40 @@ const posicionar = _peca => {
             })
     }
 
-    return userInput(pergunta, validacao)
+    return userInput(pergunta, validacao).then(resposta => {
+        return Promise.resolve({ ..._peca, pos: resposta.toUpperCase(), })
+    })
 }
 
 const posicionarPeca = _peca => {
-    return girar({ ..._peca, }).then(peca => {
-        clear()
-        Tabuleiro.gerar()
+    let promessa = Promise.resolve()
 
-        return posicionar(peca).catch(() => {
+    if (_peca.tam >= 1) {
+        promessa = girar({ ..._peca, }).then(peca => {
+            clear()
+            Tabuleiro.gerar()
 
+            return Promise.resolve(peca)
+
+        })
+    }
+
+    return promessa
+        .then(peca => {
+            return posicionar(peca)
+        })
+        .then(peca => {
+            clear()
+            Tabuleiro.gerar()
+
+            const Pecas = require('../Pecas')
+
+            Pecas.pecas[peca.id].pos = peca.pos
+            Pecas.pecas[peca.id].angulo = peca.angulo
+        })
+        .catch(() => {
             return posicionarPeca(_peca)
         })
-    })
 }
 
 module.exports = posicionarPeca

@@ -1,54 +1,12 @@
 const objectMap = require('object-map')
 const intersect = require('intersect')
 
-const letras = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'O', 'P', ]
+const letras = require('./letras')
 
-function gerarLinha (exibirNumeros = false) {
-    let linhaRenderizada = '   '
+const gerarLinha = require('./gerarLinha')
+const gerarLinhaAlfa = require('./gerarLinhaAlfa')
 
-    letras.map((letra, pos) => {
-        pos++
-
-        if (exibirNumeros) {
-            pos = `${pos}`.padStart(2, '0')
-
-            linhaRenderizada += gerarColuna(pos)
-        }
-        else {
-            linhaRenderizada += '-------'
-        }
-    })
-
-    console.log(linhaRenderizada)
-}
-
-function gerarLinhaAlfa (letra) {
-    let linha = ''
-    const areasOcupadas = Tabuleiro.getAreasOcupadas()
-
-    linha = `${letra} |`
-
-    for (let numero = 1, max = letras.length; numero <= max; numero++) {
-        const pos = `${letra}${numero}`
-
-        if (areasOcupadas.indexOf(pos) === -1) {
-            linha += gerarColuna()
-        }
-        else {
-            const Peca = Tabuleiro.getPecaPorPosicao(pos)
-
-            linha += gerarColuna(Peca.id)
-        }
-    }
-
-    console.log(linha)
-}
-
-function gerarColuna (conteudo = '  ') {
-    return `  ${conteudo}  |`
-}
-
-class TabuleiroClass {
+class Tabuleiro {
     gerar () {
         gerarLinha(true)
 
@@ -62,12 +20,12 @@ class TabuleiroClass {
         console.log()
     }
 
-    validarPosicaoPeca (idPeca, posicao) {
+    validarPosicaoPeca (idPeca, posicao, angulo) {
         posicao = posicao.toUpperCase()
 
         return this.validarPosicao(idPeca, posicao)
             .then(() => {
-                return this.validarSobreposicao(idPeca, posicao)
+                return this.validarSobreposicao(idPeca, posicao, angulo)
             })
     }
 
@@ -90,8 +48,8 @@ class TabuleiroClass {
         }
     }
 
-    getAreasOcupadasPeca (idPeca, posicao) {
-        const Pecas = require('./Pecas')
+    getAreasOcupadasPeca (idPeca, posicao, angulo) {
+        const Pecas = require('../Pecas')
         const Peca = Pecas.pecas[idPeca]
         const areas = []
 
@@ -99,18 +57,54 @@ class TabuleiroClass {
 
         for (let c = 0; c < Peca.tam; c++) {
             let letraArea = letra
-            if (Peca.desvio === c) {
-                letraArea = this.desviarLetra(letraArea)
+            let numeroArea = numero
+
+            switch (angulo) {
+                case 0: {
+                    numeroArea += c
+
+                    if (Peca.desvio === c) {
+                        letraArea = this.desviarLetra(letraArea)
+                    }
+                }
+                    break
+                case 90: {
+                    letraArea = this.desviarLetra(letraArea, c * -1)
+
+                    if (Peca.desvio === c) {
+                        numeroArea += 1
+                    }
+                }
+                    break
+                case 180: {
+                    numeroArea += c * -1
+
+                    if (Peca.desvio === c) {
+                        letraArea = this.desviarLetra(letraArea, -1)
+                    }
+                }
+                    break
+                case 270: {
+                    letraArea = this.desviarLetra(letraArea, c)
+
+                    if (Peca.desvio === c) {
+                        numeroArea += -1
+                    }
+                }
             }
 
-            areas.push(`${letraArea}${numero + c}`)
+            if (numeroArea > 15 || numeroArea < 1) {
+                numeroArea = '*'
+            }
+
+            areas.push(`${letraArea}${numeroArea}`)
         }
 
         return areas
     }
 
     getAreasOcupadas () {
-        const Pecas = require('./Pecas').pecas
+        const Pecas = require('../Pecas').pecas
         let areas = []
 
         objectMap(Pecas, (Peca, idPeca) => {
@@ -118,7 +112,7 @@ class TabuleiroClass {
                 return
             }
 
-            areas = areas.concat(this.getAreasOcupadasPeca(idPeca, Peca.pos))
+            areas = areas.concat(this.getAreasOcupadasPeca(idPeca, Peca.pos, Peca.angulo))
         })
 
         return areas
@@ -131,8 +125,8 @@ class TabuleiroClass {
         return { letra, numero, }
     }
 
-    desviarLetra (letra) {
-        const pos = letras.indexOf(letra) - 1
+    desviarLetra (letra, count = 1) {
+        const pos = letras.indexOf(letra) - count
 
         if (pos < 0) {
             return '*'
@@ -141,15 +135,15 @@ class TabuleiroClass {
         return letras[pos]
     }
 
-    validarSobreposicao (idPeca, posicao) {
-        const areasPeca = this.getAreasOcupadasPeca(idPeca, posicao)
+    validarSobreposicao (idPeca, posicao, angulo) {
+        const areasPeca = this.getAreasOcupadasPeca(idPeca, posicao, angulo)
         const areas = this.getAreasOcupadas()
         const validas = []
 
         areasPeca.map(area => {
             validas.push(area.indexOf('*') === -1)
         })
-
+        console.log(areasPeca)
         if (validas.indexOf(false) !== -1) {
             return Promise.reject({
                 message: 'Parte da peça se encontra fora do tabuleiro',
@@ -169,7 +163,7 @@ class TabuleiroClass {
     }
 
     getPecaPorPosicao (pos) {
-        const Pecas = require('./Pecas').pecas
+        const Pecas = require('../Pecas').pecas
         let aRetornar
 
         objectMap(Pecas, (Peca, idPeca) => {
@@ -177,7 +171,7 @@ class TabuleiroClass {
                 return
             }
 
-            const pecaAreas = this.getAreasOcupadasPeca(idPeca, Peca.pos)
+            const pecaAreas = this.getAreasOcupadasPeca(idPeca, Peca.pos, Peca.angulo)
 
             if (pecaAreas.indexOf(pos) !== -1) {
                 aRetornar = Peca
@@ -188,6 +182,4 @@ class TabuleiroClass {
     }
 }
 
-const Tabuleiro = new TabuleiroClass()
-
-module.exports = Tabuleiro
+module.exports = new Tabuleiro()

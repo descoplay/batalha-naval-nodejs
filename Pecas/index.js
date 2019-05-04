@@ -12,14 +12,16 @@ class Pecas {
     constructor () {
         this.angulos = [ 0, 90, 180, 270, ]
         this.tiposPeca = [
-            { nome: 'Hidroavião', qtd: 5, tam: 3, desvio: 1, },
-            { nome: 'Encouraçado', qtd: 2, tam: 4, desvio: false, },
+            // { nome: 'Hidroavião', qtd: 5, tam: 3, desvio: 1, },
+            // { nome: 'Encouraçado', qtd: 2, tam: 4, desvio: false, },
             { nome: 'Porta-Aviao', qtd: 1, tam: 5, desvio: false, },
-            { nome: 'Submarino', qtd: 4, tam: 1, desvio: false, },
-            { nome: 'Cruzador', qtd: 3, tam: 2, desvio: false, },
+            // { nome: 'Submarino', qtd: 4, tam: 1, desvio: false, },
+            // { nome: 'Cruzador', qtd: 3, tam: 2, desvio: false, },
         ]
 
-        this.pecas = criarPecas(this.tiposPeca)
+        this.pecas = {}
+        this.pecas[1] = criarPecas(this.tiposPeca)
+        this.pecas[2] = criarPecas(this.tiposPeca)
     }
 
     selecionarPeca (_pergunta) {
@@ -29,7 +31,7 @@ class Pecas {
 
         let pergunta = _pergunta + '\n\n'
 
-        objectMap(this.pecas, peca => {
+        objectMap(this.pecas[global.jogador], peca => {
             pergunta += `${peca.id} | ${peca.nome} ${peca.num}`
 
             if (peca.pos) {
@@ -42,7 +44,7 @@ class Pecas {
         pergunta += '\nCódigo:'
 
         return userInput(pergunta, resposta => {
-            const codigos = Object.keys(this.pecas)
+            const codigos = Object.keys(this.pecas[global.jogador])
 
             resposta = resposta.toUpperCase()
 
@@ -57,14 +59,14 @@ class Pecas {
         }).then(resposta => {
             resposta = resposta.toUpperCase()
 
-            return Promise.resolve(this.pecas[resposta])
+            return Promise.resolve(this.pecas[global.jogador][resposta])
         })
     }
 
     tudoPosicionado () {
         let tudoPosicionado = true
 
-        objectMap(this.pecas, peca => {
+        objectMap(this.pecas[global.jogador], peca => {
             if (!peca.pos) {
                 tudoPosicionado = false
             }
@@ -83,6 +85,9 @@ class Pecas {
             })
             .then(() => {
                 if (this.tudoPosicionado()) {
+                    clear()
+                    Tabuleiro.gerar()
+
                     const pergunta = 'Todas as peças foram posicionadas. Seguir para a próxima '
                         + 'etapa? (S/N)'
 

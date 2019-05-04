@@ -50,7 +50,7 @@ class Tabuleiro {
 
     getAreasOcupadasPeca (idPeca, posicao, angulo) {
         const Pecas = require('../Pecas')
-        const Peca = Pecas.pecas[idPeca]
+        const Peca = Pecas.pecas[global.jogador][idPeca]
         const areas = []
 
         const { letra, numero, } = this.desmembrarPosicao(posicao)
@@ -104,7 +104,7 @@ class Tabuleiro {
     }
 
     getAreasOcupadas () {
-        const Pecas = require('../Pecas').pecas
+        const Pecas = require('../Pecas').pecas[global.jogador]
         let areas = []
 
         objectMap(Pecas, (Peca, idPeca) => {
@@ -163,7 +163,7 @@ class Tabuleiro {
     }
 
     getPecaPorPosicao (pos) {
-        const Pecas = require('../Pecas').pecas
+        const Pecas = require('../Pecas').pecas[global.jogador]
         let aRetornar
 
         objectMap(Pecas, (Peca, idPeca) => {

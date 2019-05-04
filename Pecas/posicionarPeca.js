@@ -71,8 +71,8 @@ const posicionarPeca = _peca => {
 
             const Pecas = require('../Pecas')
 
-            Pecas.pecas[peca.id].pos = peca.pos
-            Pecas.pecas[peca.id].angulo = peca.angulo
+            Pecas.pecas[global.jogador][peca.id].pos = peca.pos
+            Pecas.pecas[global.jogador][peca.id].angulo = peca.angulo
         })
         .catch(() => {
             return posicionarPeca(_peca)

@@ -17,5 +17,5 @@ module.exports = (exibirNumeros = false) => {
         }
     })
 
-    console.log(linhaRenderizada)
+    return linhaRenderizada
 }

@@ -1,11 +1,11 @@
 const userInput = require('@desco/node-user-input')
 
-const clear = require('./clear')
+const Tela = require('./Tela')
 
 module.exports = (_jogador, _pergunta = true) => {
-    clear()
-
     global.jogador = _jogador
+
+    Tela.clear()
 
     if (_pergunta) {
         return userInput(

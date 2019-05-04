@@ -2,7 +2,7 @@ const objectMap = require('object-map')
 
 const userInput = require('@desco/node-user-input')
 
-const clear = require('../clear')
+const Tela = require('../Tela')
 const Tabuleiro = require('../Tabuleiro')
 
 const criarPecas = require('./criarPecas')
@@ -25,9 +25,9 @@ class Pecas {
     }
 
     selecionarPeca (_pergunta) {
-        clear()
+        const tabuleiro = Tabuleiro.gerar()
 
-        Tabuleiro.gerar()
+        Tela.setArray(tabuleiro).renderizar()
 
         let pergunta = _pergunta + '\n\n'
 
@@ -49,8 +49,9 @@ class Pecas {
             resposta = resposta.toUpperCase()
 
             if (codigos.indexOf(resposta) === -1) {
-                clear()
-                Tabuleiro.gerar()
+                const tabuleiro = Tabuleiro.gerar()
+
+                Tela.setArray(tabuleiro).renderizar()
 
                 return Promise.reject({ type: 'repeat', message: 'Código inválido', })
             }
@@ -78,23 +79,26 @@ class Pecas {
     setPos () {
         return this.selecionarPeca('Qual a peça a ser posicionada?')
             .then(peca => {
-                clear()
-                Tabuleiro.gerar()
+                const tabuleiro = Tabuleiro.gerar()
+
+                Tela.setArray(tabuleiro).renderizar()
 
                 return posicionarPeca(peca)
             })
             .then(() => {
                 if (this.tudoPosicionado()) {
-                    clear()
-                    Tabuleiro.gerar()
+                    const tabuleiro = Tabuleiro.gerar()
+
+                    Tela.setArray(tabuleiro).renderizar()
 
                     const pergunta = 'Todas as peças foram posicionadas. Seguir para a próxima '
                         + 'etapa? (S/N)'
 
                     return userInput(pergunta, resposta => {
                         if ([ 'S', 'N', ].indexOf(resposta.toUpperCase()) === -1) {
-                            clear()
-                            Tabuleiro.gerar()
+                            const tabuleiro = Tabuleiro.gerar()
+
+                            Tela.setArray(tabuleiro).renderizar()
 
                             return Promise.reject({ type: 'repeat', message: 'Resposta inválida', })
                         }

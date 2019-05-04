@@ -22,5 +22,5 @@ module.exports = letra => {
         }
     }
 
-    console.log(linha)
+    return linha
 }

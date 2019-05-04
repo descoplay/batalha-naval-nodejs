@@ -8,16 +8,19 @@ const gerarLinhaAlfa = require('./gerarLinhaAlfa')
 
 class Tabuleiro {
     gerar () {
-        gerarLinha(true)
+        const tabuleiro = []
+
+        tabuleiro.push(gerarLinha(true))
 
         letras.map(letra => {
-            gerarLinha()
-            gerarLinhaAlfa(letra)
+            tabuleiro.push(gerarLinha())
+            tabuleiro.push(gerarLinhaAlfa(letra))
         })
 
-        gerarLinha()
+        tabuleiro.push(gerarLinha())
+        tabuleiro.push('')
 
-        console.log()
+        return tabuleiro
     }
 
     validarPosicaoPeca (idPeca, posicao, angulo) {

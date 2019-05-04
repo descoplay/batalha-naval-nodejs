@@ -1,6 +1,6 @@
 const userInput = require('@desco/node-user-input')
 
-const clear = require('../clear')
+const Tela = require('../Tela')
 const Tabuleiro = require('../Tabuleiro')
 
 const girar = _peca => {
@@ -13,8 +13,9 @@ const girar = _peca => {
         resposta = parseInt(resposta)
 
         if (Pecas.angulos.indexOf(resposta) === -1) {
-            clear()
-            Tabuleiro.gerar()
+            const tabuleiro = Tabuleiro.gerar()
+
+            Tela.setArray(tabuleiro).renderizar()
 
             return Promise.reject({ type: 'repeat', message: 'Ângulo inválido', })
         }
@@ -34,8 +35,9 @@ const posicionar = _peca => {
     const validacao = resposta => {
         return Tabuleiro.validarPosicaoPeca(peca.id, resposta, peca.angulo)
             .catch(erro => {
-                clear()
-                Tabuleiro.gerar()
+                const tabuleiro = Tabuleiro.gerar()
+
+                Tela.setArray(tabuleiro).renderizar()
 
                 erro.type = 'break'
 
@@ -53,8 +55,9 @@ const posicionarPeca = _peca => {
 
     if (_peca.tam >= 1) {
         promessa = girar({ ..._peca, }).then(peca => {
-            clear()
-            Tabuleiro.gerar()
+            const tabuleiro = Tabuleiro.gerar()
+
+            Tela.setArray(tabuleiro).renderizar()
 
             return Promise.resolve(peca)
 
@@ -66,8 +69,9 @@ const posicionarPeca = _peca => {
             return posicionar(peca)
         })
         .then(peca => {
-            clear()
-            Tabuleiro.gerar()
+            const tabuleiro = Tabuleiro.gerar()
+
+            Tela.setArray(tabuleiro).renderizar()
 
             const Pecas = require('../Pecas')
 

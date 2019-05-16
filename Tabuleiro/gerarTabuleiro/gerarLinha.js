@@ -1,4 +1,4 @@
-const letras = require('./letras')
+const letras = require('../letras')
 const gerarColuna = require('./gerarColuna')
 
 module.exports = (exibirNumeros = false) => {

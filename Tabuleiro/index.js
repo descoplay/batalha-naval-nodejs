@@ -3,24 +3,38 @@ const intersect = require('intersect')
 
 const letras = require('./letras')
 
-const gerarLinha = require('./gerarLinha')
-const gerarLinhaAlfa = require('./gerarLinhaAlfa')
+const gerarTabuleiro = require('./gerarTabuleiro')
 
 class Tabuleiro {
+    constructor () {
+        this.areasAtacadas = { 1: {}, 2: {}, }
+    }
+
     gerar () {
-        const tabuleiro = []
+        const pecas = require('../Pecas').pecas[global.jogador]
+        const pecasPorArea = {}
 
-        tabuleiro.push(gerarLinha(true))
+        objectMap(pecas, peca => {
+            if (!peca.areas) {
+                return
+            }
 
-        letras.map(letra => {
-            tabuleiro.push(gerarLinha())
-            tabuleiro.push(gerarLinhaAlfa(letra))
+            peca.areas.map(area => {
+                pecasPorArea[area] = peca.id
+            })
         })
 
-        tabuleiro.push(gerarLinha())
-        tabuleiro.push('')
+        return gerarTabuleiro(pecasPorArea)
+    }
 
-        return tabuleiro
+    gerarAuxiliar () {
+        const areasAtacadas = {}
+
+        objectMap(this.areasAtacadas[global.jogador], (seAcertou, areaAtacada) => {
+            areasAtacadas[areaAtacada] = seAcertou ? '||' : 'XX'
+        })
+
+        return gerarTabuleiro(areasAtacadas)
     }
 
     validarPosicaoPeca (idPeca, posicao, angulo) {

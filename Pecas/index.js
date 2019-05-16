@@ -12,11 +12,11 @@ class Pecas {
     constructor () {
         this.angulos = [ 0, 90, 180, 270, ]
         this.tiposPeca = [
-            // { nome: 'Hidroavião', qtd: 5, tam: 3, desvio: 1, },
-            // { nome: 'Encouraçado', qtd: 2, tam: 4, desvio: false, },
+            { nome: 'Hidroavião', qtd: 5, tam: 3, desvio: 1, },
+            { nome: 'Encouraçado', qtd: 2, tam: 4, desvio: false, },
             { nome: 'Porta-Aviao', qtd: 1, tam: 5, desvio: false, },
-            // { nome: 'Submarino', qtd: 4, tam: 1, desvio: false, },
-            // { nome: 'Cruzador', qtd: 3, tam: 2, desvio: false, },
+            { nome: 'Submarino', qtd: 4, tam: 1, desvio: false, },
+            { nome: 'Cruzador', qtd: 3, tam: 2, desvio: false, },
         ]
 
         this.pecas = {}
@@ -26,8 +26,9 @@ class Pecas {
 
     selecionarPeca (_pergunta) {
         const tabuleiro = Tabuleiro.gerar()
+        const tabuleiroAuxiliar = Tabuleiro.gerarAuxiliar()
 
-        Tela.setArray(tabuleiro).renderizar()
+        Tela.setArray(tabuleiro).setArray(tabuleiroAuxiliar, 1, 12).renderizar()
 
         let pergunta = _pergunta + '\n\n'
 

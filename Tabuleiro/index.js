@@ -40,13 +40,13 @@ class Tabuleiro {
     validarPosicaoPeca (idPeca, posicao, angulo) {
         posicao = posicao.toUpperCase()
 
-        return this.validarPosicao(idPeca, posicao)
+        return this.validarPosicao(posicao)
             .then(() => {
                 return this.validarSobreposicao(idPeca, posicao, angulo)
             })
     }
 
-    validarPosicao (idPeca, posicao) {
+    validarPosicao (posicao) {
         const { letra, numero, } = this.desmembrarPosicao(posicao)
 
         const letraValida = letra >= 'A' && letra <= 'P'
@@ -120,8 +120,8 @@ class Tabuleiro {
         return areas
     }
 
-    getAreasOcupadas () {
-        const Pecas = require('../Pecas').pecas[global.jogador]
+    getAreasOcupadas (_jogador = global.jogador) {
+        const Pecas = require('../Pecas').pecas[_jogador]
         let areas = []
 
         objectMap(Pecas, (Peca, idPeca) => {

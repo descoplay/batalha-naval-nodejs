@@ -1,19 +1,8 @@
-const trocarJogador = require('./trocarJogador')
+const Jogo = require('./Jogo')
 
-const Pecas = require('./Pecas')
-
-Promise.resolve()
+Jogo.setPos()
     .then(() => {
-        trocarJogador(1, false)
-    })
-    .then(() => {
-        return Pecas.setPos()
-    })
-    .then(() => {
-        return trocarJogador(2)
-    })
-    .then(() => {
-        return Pecas.setPos()
+        return Jogo.iniciar()
     })
     .catch(e => {
         console.log(e)

@@ -26,9 +26,8 @@ class Pecas {
 
     selecionarPeca (_pergunta) {
         const tabuleiro = Tabuleiro.gerar()
-        const tabuleiroAuxiliar = Tabuleiro.gerarAuxiliar()
 
-        Tela.setArray(tabuleiro).setArray(tabuleiroAuxiliar, 1, 12).renderizar()
+        Tela.setArray(tabuleiro).renderizar()
 
         let pergunta = _pergunta + '\n\n'
 

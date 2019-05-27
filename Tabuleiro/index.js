@@ -27,6 +27,7 @@ class Tabuleiro {
         return gerarTabuleiro(pecasPorArea)
     }
 
+    // TODO:: Deve exibir a Sigla da peça atacada, e não apenas um simbolo qualquer
     gerarAuxiliar () {
         const areasAtacadas = {}
 
@@ -37,6 +38,7 @@ class Tabuleiro {
         return gerarTabuleiro(areasAtacadas)
     }
 
+    // TODO: Deve validar tb para que uma peça não fique grudada na outra
     validarPosicaoPeca (idPeca, posicao, angulo) {
         posicao = posicao.toUpperCase()
 
@@ -65,6 +67,7 @@ class Tabuleiro {
         }
     }
 
+    // TODO: Deve receber apenas a peça em si
     getAreasOcupadasPeca (idPeca, posicao, angulo) {
         const Pecas = require('../Pecas')
         const Peca = Pecas.pecas[global.jogador][idPeca]

@@ -1,6 +1,8 @@
 const Jogador = require('../Jogador')
 const Pecas = require('../Pecas')
 
+const finalizar = require('./finalizar')
+
 class Jogo {
     setPos () {
         return Jogador.trocar(1, false)
@@ -21,7 +23,14 @@ class Jogo {
                 return Jogador.atacar()
             })
             .then(() => {
-                return this.iniciar(_jogador === 1 ? 2 : 1)
+                const adversario = _jogador === 1 ? 2 : 1
+
+                if (!Pecas.tudoAfundado(adversario)) {
+                    return this.iniciar(adversario)
+                }
+                else {
+                    return finalizar(_jogador, adversario)
+                }
             })
     }
 }

@@ -6,6 +6,8 @@ module.exports = tiposPeca => {
             const peca = { ...tipoPeca, num: c + 1, }
 
             peca.id = peca.nome[0] + (peca.num)
+            peca.areasAtacadas = []
+            peca.afundou = false
 
             delete peca.qtd
 

@@ -182,8 +182,8 @@ class Tabuleiro {
         return Promise.resolve()
     }
 
-    getPecaPorPosicao (pos) {
-        const Pecas = require('../Pecas').pecas[global.jogador]
+    getPecaPorPosicao (pos, _jogador) {
+        const Pecas = require('../Pecas').pecas[_jogador]
         let aRetornar
 
         objectMap(Pecas, (Peca, idPeca) => {

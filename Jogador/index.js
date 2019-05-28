@@ -2,6 +2,7 @@ const userInput = require('@desco/node-user-input')
 
 const Tela = require('../Tela')
 const Tabuleiro = require('../Tabuleiro')
+const Pecas = require('../Pecas')
 
 class Jogador {
     // TODO:  Adversario tb em global
@@ -31,20 +32,23 @@ class Jogador {
         }
 
         return userInput('Entre com a posição em que deseja atacar:', validacao).then(resposta => {
+            const adversario = global.jogador === 1 ? 2 : 1
             const pos = resposta.toUpperCase()
-            const areas = Tabuleiro.getAreasOcupadas(global.jogador === 1 ? 2 : 1)
-            const pressione = 'Pressione Enter, para prosseguir'
+            const pecaAtacada = Tabuleiro.getPecaPorPosicao(pos, adversario)
+            const acertou = !!pecaAtacada
 
-            Tabuleiro.areasAtacadas[global.jogador][pos] = areas.indexOf(pos) !== -1
+            Tabuleiro.areasAtacadas[global.jogador][pos] = acertou
 
             this.renderizarTabuleiros()
 
-            if (Tabuleiro.areasAtacadas[global.jogador][pos]) {
-                return userInput(`Acertou! ${pressione}`)
+            if (acertou) {
+                pecaAtacada.areasAtacadas.push(pos)
+
+                pecaAtacada.afundou = pecaAtacada.areasAtacadas.length === pecaAtacada.tam
+                Pecas.pecas[adversario][pecaAtacada.id] = pecaAtacada
             }
-            else {
-                return userInput(`Errou! ${pressione}`)
-            }
+
+            return userInput(`${acertou ? 'Acertou' : 'Errou'}! Pressione Enter, para prosseguir`)
         })
     }
 

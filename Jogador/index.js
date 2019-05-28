@@ -4,6 +4,7 @@ const Tela = require('../Tela')
 const Tabuleiro = require('../Tabuleiro')
 
 class Jogador {
+    // TODO:  Adversario tb em global
     trocar (_jogador, _pergunta = true) {
         global.jogador = _jogador
 

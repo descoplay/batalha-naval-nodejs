@@ -27,7 +27,6 @@ class Tabuleiro {
         return gerarTabuleiro(pecasPorArea)
     }
 
-    // TODO:: Deve exibir a Sigla da peça atacada, e não apenas um simbolo qualquer
     gerarAuxiliar () {
         const areasAtacadas = {}
 

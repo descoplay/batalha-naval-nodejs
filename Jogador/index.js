@@ -48,7 +48,21 @@ class Jogador {
                 Pecas.pecas[adversario][pecaAtacada.id] = pecaAtacada
             }
 
-            return userInput(`${acertou ? 'Acertou' : 'Errou'}! Pressione Enter, para prosseguir`)
+            let texto
+
+            if (acertou) {
+                if (pecaAtacada.areasAtacadas.length === pecaAtacada.tam) {
+                    texto = `Afundou a peça ${pecaAtacada.nome}`
+                }
+                else {
+                    texto = 'Acertou'
+                }
+            }
+            else {
+                texto = 'Errou'
+            }
+
+            return userInput(`${texto}! Pressione Enter, para prosseguir`)
         })
     }
 

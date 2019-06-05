@@ -14,7 +14,7 @@ class Pecas {
         this.tiposPeca = [
             // { nome: 'Hidroavião', qtd: 5, tam: 3, desvio: 1, },
             // { nome: 'Encouraçado', qtd: 2, tam: 4, desvio: false, },
-            { nome: 'Porta-Aviao', qtd: 1, tam: 1, desvio: false, },
+            { nome: 'Porta-Aviao', qtd: 3, tam: 5, desvio: false, },
             // { nome: 'Submarino', qtd: 4, tam: 1, desvio: false, },
             // { nome: 'Cruzador', qtd: 3, tam: 2, desvio: false, },
         ]

@@ -17,16 +17,20 @@ class Jogo {
             })
     }
 
-    iniciar (_jogador = 1) {
-        return Jogador.trocar(_jogador)
-            .then(() => {
-                return Jogador.atacar()
-            })
+    iniciar (_jogador = 1, _jogada = 1) {
+        return Jogador.atacar()
             .then(() => {
                 const adversario = _jogador === 1 ? 2 : 1
 
                 if (!Pecas.tudoAfundado(adversario)) {
-                    return this.iniciar(adversario)
+                    if (_jogada < 3) {
+                        return this.iniciar(_jogador, _jogada + 1)
+                    }
+                    else {
+                        return Jogador.trocar(adversario).then(() => {
+                            return this.iniciar(adversario)
+                        })
+                    }
                 }
                 else {
                     return finalizar(_jogador, adversario)

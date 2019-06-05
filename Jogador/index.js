@@ -35,7 +35,7 @@ class Jogador {
             const adversario = global.jogador === 1 ? 2 : 1
             const pos = resposta.toUpperCase()
             const pecaAtacada = Tabuleiro.getPecaPorPosicao(pos, adversario)
-            const acertou = !!pecaAtacada
+            const acertou = pecaAtacada ? pecaAtacada.id : false
 
             Tabuleiro.areasAtacadas[global.jogador][pos] = acertou
 

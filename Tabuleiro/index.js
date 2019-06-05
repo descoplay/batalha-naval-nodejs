@@ -32,7 +32,7 @@ class Tabuleiro {
         const areasAtacadas = {}
 
         objectMap(this.areasAtacadas[global.jogador], (seAcertou, areaAtacada) => {
-            areasAtacadas[areaAtacada] = seAcertou ? '||' : 'XX'
+            areasAtacadas[areaAtacada] = seAcertou || 'XX'
         })
 
         return gerarTabuleiro(areasAtacadas)

@@ -3,6 +3,7 @@ const gerarLinhaAlfa = require('./gerarLinhaAlfa')
 
 const letras = require('../letras')
 
+// TODO: Label do tabuleito
 module.exports = (_conteudo) => {
     const tabuleiro = []
 

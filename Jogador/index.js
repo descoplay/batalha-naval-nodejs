@@ -23,6 +23,7 @@ class Jogador {
     atacar () {
         this.renderizarTabuleiros()
 
+        // TODO: Deve validar se posição já foi atacada
         const validacao = resposta => {
             return Tabuleiro.validarPosicao(resposta.toUpperCase()).catch(e => {
                 this.renderizarTabuleiros()

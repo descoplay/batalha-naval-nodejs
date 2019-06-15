@@ -80,6 +80,8 @@ const posicionarPeca = _peca => {
             Pecas.pecas[global.jogador][peca.id].areas = Tabuleiro.getAreasOcupadasPeca(
                 peca.id, peca.pos, peca.angulo
             )
+
+            Tabuleiro.setAreasRestritasPeca(Pecas.pecas[global.jogador][peca.id])
         })
         .catch(() => {
             return posicionarPeca(_peca)

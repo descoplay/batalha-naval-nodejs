@@ -8,6 +8,7 @@ const gerarTabuleiro = require('./gerarTabuleiro')
 class Tabuleiro {
     constructor () {
         this.areasAtacadas = { 1: {}, 2: {}, }
+        this.areasRestritas = []
     }
 
     gerar () {
@@ -37,7 +38,6 @@ class Tabuleiro {
         return gerarTabuleiro(areasAtacadas)
     }
 
-    // TODO: Deve validar tb para que uma peça não fique grudada na outra
     validarPosicaoPeca (idPeca, posicao, angulo) {
         posicao = posicao.toUpperCase()
 
@@ -45,9 +45,12 @@ class Tabuleiro {
             .then(() => {
                 return this.validarSobreposicao(idPeca, posicao, angulo)
             })
+            .then(() => {
+                return this.validarProximidade(idPeca, posicao, angulo)
+            })
     }
 
-    validarPosicao (posicao) {
+    validarPosicao (posicao, _promise = true) {
         const { letra, numero, } = this.desmembrarPosicao(posicao)
 
         const letraValida = letra >= 'A' && letra <= 'P'
@@ -56,13 +59,13 @@ class Tabuleiro {
         const valido = letraValida && numeroValido
 
         if (valido) {
-            return Promise.resolve()
+            return _promise ? Promise.resolve() : true
         }
         else {
-            return Promise.reject({
+            return _promise ? Promise.reject({
                 message: 'A posição deve estar entre A1 e P15',
                 type: 'repeat',
-            })
+            }) : false
         }
     }
 
@@ -162,7 +165,7 @@ class Tabuleiro {
         areasPeca.map(area => {
             validas.push(area.indexOf('*') === -1)
         })
-        console.log(areasPeca)
+
         if (validas.indexOf(false) !== -1) {
             return Promise.reject({
                 message: 'Parte da peça se encontra fora do tabuleiro',
@@ -174,6 +177,20 @@ class Tabuleiro {
             return Promise.reject({
                 message: 'Parte da peça se encontra em uma área ocupada por outra peça' +
                     ' posicionada',
+                type: 'repeat',
+            })
+        }
+
+        return Promise.resolve()
+    }
+
+    validarProximidade (idPeca, posicao, angulo) {
+        const areasPeca = this.getAreasOcupadasPeca(idPeca, posicao, angulo)
+
+        if (intersect(areasPeca, this.areasRestritas).length > 0) {
+            return Promise.reject({
+                message: 'Parte da peça se encontra muito próxima a outra peça\nDeixe ao menos um' +
+                    ' quadrado de espaço entre as peças',
                 type: 'repeat',
             })
         }
@@ -198,6 +215,44 @@ class Tabuleiro {
         })
 
         return aRetornar
+    }
+
+    setAreasRestritasPeca (_Peca) {
+        _Peca.areas.map(area => {
+            area = this.desmembrarPosicao(area)
+
+            const areaSuperior = this.desviarLetra(area.letra, 1) + area.numero
+            const areaSuperiorLivre = _Peca.areas.indexOf(areaSuperior) === -1
+            const areaSuperiorValida = this.validarPosicao(areaSuperior, false)
+
+            if (areaSuperiorLivre && areaSuperiorValida) {
+                this.areasRestritas.push(areaSuperior)
+            }
+
+            const areaInferior = this.desviarLetra(area.letra, -1) + area.numero
+            const areaInferiorLivre = _Peca.areas.indexOf(areaInferior) === -1
+            const areaInferiorValida = this.validarPosicao(areaInferior, false)
+
+            if (areaInferiorLivre && areaInferiorValida) {
+                this.areasRestritas.push(areaInferior)
+            }
+
+            const areaDireita = area.letra + (area.numero + 1)
+            const areaDireitaLivre = _Peca.areas.indexOf(areaDireita) === -1
+            const areaDireitaValida = this.validarPosicao(areaDireita, false)
+
+            if (areaDireitaLivre && areaDireitaValida) {
+                this.areasRestritas.push(areaDireita)
+            }
+
+            const areaEsquerda = area.letra + (area.numero - 1)
+            const areaEsquerdaLivre = _Peca.areas.indexOf(areaEsquerda) === -1
+            const areaEsquerdaValida = this.validarPosicao(areaEsquerda, false)
+
+            if (areaEsquerdaLivre && areaEsquerdaValida) {
+                this.areasRestritas.push(areaEsquerda)
+            }
+        })
     }
 }
 
